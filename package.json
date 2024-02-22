@@ -1,0 +1,46 @@
+{
+  "name": "coc-elin",
+  "version": "0.0.0-development",
+  "description": "",
+  "author": "Masashi Iizuka <liquidz.uo@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "keywords": [
+    "coc.nvim"
+  ],
+  "engines": {
+    "coc": "^0.0.82"
+  },
+  "scripts": {
+    "watch": "node esbuild.mjs --watch",
+    "build": "node esbuild.mjs",
+    "prepare": "node esbuild.mjs"
+  },
+  "devDependencies": {
+    "coc.nvim": "^0.0.83-next.18",
+    "esbuild": "^0.19.8",
+    "typescript": "^5.3.3"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "coc-elin configuration",
+      "properties": {
+        "coc-elin.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable coc-elin extension"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "coc-elin.Command",
+        "title": "coc-elin command title"
+      }
+    ]
+  }
+}

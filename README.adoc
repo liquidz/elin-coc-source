@@ -1,0 +1,17 @@
+= vim-elin-coc-source
+
+https://github.com/liquidz/vim-elin[vim-elin] source for https://github.com/neoclide/coc.nvim[coc.nvim].
+
+== Build
+
+* `npm run build`
+
+== License
+
+Copyright (c) 2024 https://scrapbox.io/uochan/uochan[Masashi Iizuka]
+
+Distributed under the MIT License.
+
+---
+
+> This extension is built with https://github.com/fannheyward/create-coc-extension[create-coc-extension]
