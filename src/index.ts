@@ -7,6 +7,7 @@ import {
   workspace,
 } from "coc.nvim";
 
+const FETCH_TIMEOUT_MILLI_SEC = 500 as const;
 let cachedApiPort: number | undefined = undefined;
 
 export const activate = async (context: ExtensionContext): Promise<void> => {
@@ -51,16 +52,66 @@ const fetchCompletionItems = async (
   apiPort: number,
   input: string
 ): Promise<VimCompleteItem[]> => {
-  const resp = await fetch(`http://localhost:${apiPort}/api/v1`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      method: "elin.handler.complete/complete",
-      params: [input],
-    }),
-  });
-
+  const resp = await fetchCompletionResponse(apiPort, input);
+  if (resp == null) {
+    return [];
+  }
   return await resp.json();
 };
+
+const fetchCompletionResponse = async (
+  apiPort: number,
+  input: string,
+  retrying: boolean = false
+): Promise<Response | undefined> => {
+  const resp = await fetchWithTimeout(
+    FETCH_TIMEOUT_MILLI_SEC,
+    `http://localhost:${apiPort}/api/v1`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        method: "elin.handler.complete/complete",
+        params: [input],
+      }),
+    }
+  ).catch(async () => {
+    cachedApiPort = undefined;
+    if (retrying) {
+      return undefined;
+    }
+    const newPort = await getApiPort();
+    if (newPort == null) {
+      return undefined;
+    }
+    return await fetchCompletionResponse(newPort, input, true);
+  });
+
+  return resp;
+};
+
+const fetchWithTimeout = (
+  timeoutMilliSec: number,
+  input: RequestInfo | URL,
+  init?: RequestInit | undefined
+) => Promise.race([tryFetch(input, init), timeoutPromise(timeoutMilliSec)]);
+
+const tryFetch = (
+  input: RequestInfo | URL,
+  init?: RequestInit | undefined
+): Promise<Response> =>
+  fetch(input, init).then((resp: Response) => {
+    if (resp.status !== 200) {
+      throw Error(`Failed to fetch: ${resp.status}`);
+    }
+    return Promise.resolve(resp);
+  });
+
+const timeoutPromise = (timeoutMilliSec: number): Promise<Response> =>
+  new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(Error("Timed out"));
+    }, timeoutMilliSec);
+  });
