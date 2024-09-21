@@ -1,6 +1,6 @@
-= vim-elin-coc-source
+= elin-coc-source
 
-https://github.com/liquidz/vim-elin[vim-elin] source for https://github.com/neoclide/coc.nvim[coc.nvim].
+https://github.com/liquidz/elin[liquidz/elin] source for https://github.com/neoclide/coc.nvim[coc.nvim].
 
 == Build
 
