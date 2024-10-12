@@ -1,10 +1,20 @@
 = elin-coc-source
 
-https://github.com/liquidz/elin[liquidz/elin] source for https://github.com/neoclide/coc.nvim[coc.nvim].
+https://github.com/neoclide/coc.nvim[coc.nvim] source for https://github.com/liquidz/elin[liquidz/elin].
 
-== Build
+== Installation
 
-* `npm run build`
+.vim-plug
+[source,vim]
+----
+Plug 'liquidz/elin-coc-source'
+----
+
+.dein
+[source,vim]
+----
+call dein#add('liquidz/elin-coc-source')
+----
 
 == License
 
